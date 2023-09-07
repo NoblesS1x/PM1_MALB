@@ -60,7 +60,7 @@ fun DiceWithButtonAndImage(modifier: Modifier = Modifier){
     */
 
     //@Composable
-    fun roll(result:Int):Int{
+    private fun roll(result:Int):Int{
 
         return  when(result){
             1 -> R.drawable.dice_1
