@@ -54,7 +54,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import net.noble.notes.ui.theme.NotesTheme
+import net.noble.notes.ui.theme.AppTheme
 import java.text.NumberFormat
 /*
 import android.os.Bundle
@@ -73,15 +73,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NotesTheme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    //color = MaterialTheme.App
                 ) {
                     //bodymain()
-                    newnotes()
-                    //FirstScreen()
+                    //newnotes()
+                    newtask()
                 }
             }
         }
@@ -105,12 +105,52 @@ fun newtask(){
 
         Row{
             TextField(value = name, onValueChange = {
-                name = it
-            }, placeholder = { Text("Titulo de nota") })
+                name = it },maxLines = 1,modifier = Modifier.width(325.dp),
+                placeholder = { Text("Titulo de tarea") })
         }
+        Row{
+            Text("Hora y fecha tarea")
+            //Text(text = "Hora de la nota")
+        }
+
+        Row{
+            var description by remember{
+                mutableStateOf("")
+            }
+            TextField(value = description, onValueChange = {
+                description = it},maxLines = 15,modifier = Modifier.width(325.dp)
+                , placeholder = { Text("Description") })
+        }
+
 
     }
 }
+/*
+@ExperimentalMaterial3Api
+@Composable
+fun DatePicker(
+    state: DatePickerState,
+    modifier: Modifier = Modifier,
+    dateFormatter: DatePickerFormatter = remember { DatePickerDefaults.dateFormatter() },
+    title: (@Composable () -> Unit)? = {
+        DatePickerDefaults.DatePickerTitle(
+            displayMode = state.displayMode,
+            modifier = Modifier.padding(DatePickerTitlePadding)
+        )
+    },
+    headline: (@Composable () -> Unit)? = {
+        DatePickerDefaults.DatePickerHeadline(
+            selectedDateMillis = state.selectedDateMillis,
+            displayMode = state.displayMode,
+            dateFormatter = dateFormatter,
+            modifier = Modifier.padding(DatePickerHeadlinePadding)
+        )
+    },
+    showModeToggle: Boolean = true,
+    colors: DatePickerColors = DatePickerDefaults.colors()
+) {
+}
+*/
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,6 +236,25 @@ fun bodymain() {
 
 
     }
+    /*
+    LazyColumn {
+        // Add a single item
+        item {
+            Text(text = "First item")
+        }
+
+        // Add 5 items
+        items(5) { index ->
+            Text(text = "Item: $index")
+        }
+
+        // Add another single item
+        item {
+            Text(text = "Last item")
+        }
+    }
+    */
+
 
     //Text(text = "Hello World")
     Canvas(modifier = Modifier.size(200.dp, 100.dp)/*Modifier.fillMaxSize()*/) {
@@ -283,6 +342,7 @@ fun bodymain() {
 
     //}
 
+
     Column(
         modifier = Modifier
             .padding(5.dp)
@@ -310,7 +370,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    NotesTheme {
+    AppTheme {
         Greeting("Android")
     }
 }
