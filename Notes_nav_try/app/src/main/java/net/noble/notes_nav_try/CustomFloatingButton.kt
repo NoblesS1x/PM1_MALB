@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 
 
 //Declaracion y creacion del boton flotante
+/*
 @Composable
 @Preview
 fun FloatingButton(){
@@ -233,3 +234,4 @@ fun SmallFloatingActionButtonRow(
         }
     }
 }
+ */
