@@ -73,7 +73,7 @@ fun AddNotes(navController: NavController) {
 
             Row{
                 TextField(value = name, onValueChange = {
-                    name = it},maxLines = 1,modifier = Modifier.width(325.dp),
+                    name = it},maxLines = 1,modifier = Modifier.width(375.dp),
                     placeholder = { Text("Titulo de nota") })
             }
             Row{
@@ -86,7 +86,7 @@ fun AddNotes(navController: NavController) {
                     mutableStateOf("")
                 }
                 TextField(value = description, onValueChange = {
-                    description = it},maxLines = 15,modifier = Modifier.width(325.dp)
+                    description = it},maxLines = 15,modifier = Modifier.width(375.dp)
                     , placeholder = { Text("Description") })
 
             }
