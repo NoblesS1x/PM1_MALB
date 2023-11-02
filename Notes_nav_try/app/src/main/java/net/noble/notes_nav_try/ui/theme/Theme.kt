@@ -10,10 +10,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import net.noble.notes_nav_try.MainActivity
+import net.noble.notes_nav_try.MainActivity.GlobalVars.rectColor
+
 /*
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -144,6 +148,11 @@ fun Notes_nav_tryTheme(
         LightColors
     } else {
         DarkColors
+    }
+    if (!useDarkTheme){
+        rectColor = Color(0xFFFFFBFE)
+    }else{
+        rectColor = Color(0xFF1C1B1F)
     }
 
     MaterialTheme(

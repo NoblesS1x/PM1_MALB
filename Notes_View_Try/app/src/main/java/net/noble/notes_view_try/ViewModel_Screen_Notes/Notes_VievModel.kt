@@ -9,15 +9,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class Notes_VievModel : ViewModel() {
-    var notes by mutableStateOf(listOf<Note>())
+    var state by mutableStateOf(NoteState())
         private set
     init {
         viewModelScope.launch {
+            state = state.copy(
+                isLoading = true
+            )
             delay(5000)
-            notes = listOf(
-                Note("Mercado","11-2-2023","Ir al super"),
-                Note("Mercado","11-2-2023","Ir al super"),
-                Note("Mercado","11-2-2023","Ir al super")
+            state = state.copy(
+                Notes = listOf(
+                    Note("Mercado","11-2-2023","Ir al super"),
+                    Note("Mercado","11-2-2023","Ir al super"),
+                    Note("Mercado","11-2-2023","Ir al super")
+                ),
+                isLoading = false
             )
 
         }
