@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Add_Task.Add_Task_ViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTask(navController: NavController) {
+fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
+    val state = addTaskViewmodel.state
     var name by remember {
         mutableStateOf("")
     }

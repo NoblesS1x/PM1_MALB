@@ -1,4 +1,4 @@
-package net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes
+package net.noble.notes_nav_try.Screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
@@ -39,25 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.noble.notes_nav_try.MainActivity
 import net.noble.notes_nav_try.Router
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes_ViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
-        /*
-        Scaffold(
-            floatingActionButton = {
-                MultiFloatingActionButton(fabIcon = painterResource(id = R.drawable.ic_fab_add),
-                    items = arrayListOf(FabItem(icon =  painterResource(id = R.drawable.ic_fab_add), label = "Button 1") {
-                        Toast.makeText(applicationContext,"Floating Button clicked",Toast.LENGTH_LONG).show()
-                    }))
-
-            }
-        )
-         */
-
-
-fun Notes(navController: NavController,notesVievmodel: Notes_VievModel) {
+fun Notes(navController: NavController,notesVievmodel: Notes_ViewModel) {
     val state = notesVievmodel.state
     if(state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -34,11 +34,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.noble.notes_nav_try.Router
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes_ViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNotes(navController: NavController) {
+fun AddNotes(navController: NavController,addNotesViewmodel: Add_Notes_ViewModel) {
+    val state = addNotesViewmodel.state
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

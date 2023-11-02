@@ -12,8 +12,10 @@ import androidx.navigation.compose.rememberNavController
 import net.noble.notes_nav_try.Screens.AddNotes
 import net.noble.notes_nav_try.Screens.AddTask
 import net.noble.notes_nav_try.ui.theme.Notes_nav_tryTheme
-import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes
-import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes_VievModel
+import net.noble.notes_nav_try.Screens.Notes
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Add_Task.Add_Task_ViewModel
+import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes_ViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -24,20 +26,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val Notes_VievModel by viewModels<Notes_VievModel>()
+        val Notes_ViewModel by viewModels<Notes_ViewModel>()
+        val Add_Notes_ViewModel by viewModels<Add_Notes_ViewModel>()
+        val Add_Task_ViewModel by viewModels<Add_Task_ViewModel>()
         setContent {
             Notes_nav_tryTheme {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = Router.NOTES.route){
 
                     composable(Router.NOTES.route){
-                        Notes(navController = navController,Notes_VievModel)
+                        Notes(navController = navController,Notes_ViewModel)
                     }
                     composable(Router.ADD_Notes.route){
-                        AddNotes(navController = navController)
+                        AddNotes(navController = navController,Add_Notes_ViewModel)
                     }
                     composable(Router.ADD_Task.route){
-                        AddTask(navController = navController)
+                        AddTask(navController = navController,Add_Task_ViewModel)
                     }
                 }
 
