@@ -40,6 +40,8 @@ import androidx.navigation.NavController
 import net.noble.notes_nav_try.MainActivity
 import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.Screens.ViewModel_Screen_Notes.Notes_ViewModel
+import net.noble.notes_nav_try.WindowInfo
+import net.noble.notes_nav_try.rememberWindowInfo
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -52,115 +54,156 @@ fun Notes(navController: NavController,notesVievmodel: Notes_ViewModel) {
             CircularProgressIndicator()
         }
     }
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(onClick = {navController.navigate(Router.ADD_Notes.route)}) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-            }
-        }//floating button
-    ) {
-        LazyColumn(
-            modifier = Modifier.size(400.dp, 800.dp),
-            contentPadding = PaddingValues(
-                top = 115.dp,
-                bottom =  115.dp)
-        ) {
-            items(state.Notes){
-                Column(modifier = Modifier.padding( start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center){
-                    Text(text = it.TitleNote)
-                    Text(text = it.NoteDate)
-                    Divider()
+    val windowInfo = rememberWindowInfo()
+    if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                FloatingActionButton(onClick = {navController.navigate(Router.ADD_Notes.route)}) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
                 }
-            }
-        }
-
-        Canvas(modifier = Modifier.fillMaxSize()) {
-
-
-            translate(left = 0f, top = 0f) {
-                drawRoundRect(
-                    color =MainActivity.GlobalVars.rectColor,
-                    size = Size(1100f, 320f),
-                )
-            }
-        }
-        var name by remember {
-            mutableStateOf("")
-        }
-        Column(
-            modifier = Modifier
-                .padding(5.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            }//floating button
         ) {
-            Row {
-                TextField(value = name, onValueChange = {
-                    name = it
-                }, modifier = Modifier.width(375.dp),
-                    placeholder = { Text("Buscar") })
-
-            }
-        }
-
-        Column(
-            modifier = Modifier/*Modifier.fillMaxSize()*//*Modifier.size(250.dp, 100.dp)*//*Modifier*/
-                .padding(65.dp)
-                .verticalScroll(rememberScrollState()),
-        ) {
-            Row(
-                verticalAlignment = Alignment.Top,
-                //horizontalArrangement = Arrangement.spacedBy(space = 1.dp)
-                //horizontalArrangement = Arrangement.SpaceBetween
-                horizontalArrangement = Arrangement.SpaceAround
+            LazyColumn(
+                modifier = Modifier.size(400.dp, 800.dp),
+                contentPadding = PaddingValues(
+                    top = 115.dp,
+                    bottom =  115.dp)
             ) {
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Todo")
-                }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Notas")
-                }
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Tareas")
+                items(state.Notes){
+                    Column(modifier = Modifier.padding( start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center){
+                        Text(text = it.TitleNote)
+                        Text(text = it.NoteDate)
+                        Divider()
+                    }
                 }
             }
-        }
 
-        /*
-        LazyColumn(
-            modifier = Modifier.padding(start = 24.dp, end = 24.dp),
-            contentPadding = PaddingValues(horizontal = 15.dp, vertical = 110.dp)
-        ){
-         */
-        /*
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(
-                top = 110.dp,
-                bottom =  24.dp
-            )){
-            */
-        /*
-        LazyColumn(
-            modifier = Modifier.heightIn(min = 100.dp, max = 600.dp),
-            contentPadding = PaddingValues(
-                top = 110.dp,
-                bottom =  24.dp)
+            Canvas(modifier = Modifier.fillMaxSize()) {
+
+
+                translate(left = 0f, top = 0f) {
+                    drawRoundRect(
+                        color =MainActivity.GlobalVars.rectColor,
+                        size = Size(1100f, 320f),
+                    )
+                }
+            }
+            var name by remember {
+                mutableStateOf("")
+            }
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Row {
+                    TextField(value = name, onValueChange = {
+                        name = it
+                    }, modifier = Modifier.width(375.dp),
+                        placeholder = { Text("Buscar") })
+
+                }
+            }
+
+            Column(
+                modifier = Modifier/*Modifier.fillMaxSize()*//*Modifier.size(250.dp, 100.dp)*//*Modifier*/
+                    .padding(65.dp)
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    //horizontalArrangement = Arrangement.spacedBy(space = 1.dp)
+                    //horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Todo")
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Notas")
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Tareas")
+                    }
+                }
+            }
+
+        }//Scaffold
+}else{
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                FloatingActionButton(onClick = {navController.navigate(Router.ADD_Notes.route)}) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
+                }
+            }//floating button
         ) {
-         */
-        /*
-        LazyColumn(
-            modifier = Modifier.size(400.dp, 800.dp),
-            contentPadding = PaddingValues(
-                top = 110.dp,
-                bottom =  24.dp)
-        ) {
-        */
+            LazyColumn(
+                modifier = Modifier.size(835.dp, 800.dp),
+                contentPadding = PaddingValues(
+                    top = 115.dp,
+                    bottom =  115.dp)
+            ) {
+                items(state.Notes){
+                    Column(modifier = Modifier.padding( start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center){
+                        Text(text = it.TitleNote)
+                        Text(text = it.NoteDate)
+                        Divider()
+                    }
+                }
+            }
+
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                translate(left = 0f, top = 0f) {
+                    drawRoundRect(
+                        color =MainActivity.GlobalVars.rectColor,
+                        size = Size(2400f, 320f),
+                    )
+                }
+            }
+            var name by remember {
+                mutableStateOf("")
+            }
+            Column(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Row {
+                    TextField(value = name, onValueChange = {
+                        name = it
+                    }, modifier = Modifier.width(835.dp),
+                        placeholder = { Text("Buscar") })
+
+                }
+            }
+
+                Row(modifier = Modifier.padding(65.dp),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Todo")
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Notas")
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Tareas")
+                    }
+                }
+            //}
+
+        }//Scaffold
+
+    }
+
+}//finfun
 
 
-
-
-    }//Scaffold
-    }//finfun
 

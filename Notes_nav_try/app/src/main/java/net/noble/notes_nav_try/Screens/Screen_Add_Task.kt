@@ -20,14 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.noble.notes_nav_try.Screens.ViewModel_Screen_Add_Task.Add_Task_ViewModel
+import net.noble.notes_nav_try.WindowInfo
+import net.noble.notes_nav_try.rememberWindowInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
     val state = addTaskViewmodel.state
-    var name by remember {
-        mutableStateOf("")
-    }
+    val windowInfo = rememberWindowInfo()
+    if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+        var name by remember {
+        mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -56,6 +59,39 @@ fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
                 , placeholder = { Text("Description") })
         }
 
+       }
+    }else{
+        var name by remember {
+            mutableStateOf("") }
+
+        Column(
+            modifier = Modifier
+                .padding(30.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+
+            Row{
+                TextField(value = name, onValueChange = {
+                    name = it },maxLines = 1,modifier = Modifier.width(775.dp),
+                    placeholder = { Text("Titulo de tarea") })
+            }
+            Row{
+                Text("Hora y fecha tarea")
+                //Text(text = "Hora de la nota")
+            }
+
+            Row{
+                var description by remember{
+                    mutableStateOf("")
+                }
+                TextField(value = description, onValueChange = {
+                    description = it},maxLines = 6,modifier = Modifier.width(775.dp)
+                    , placeholder = { Text("Description") })
+            }
+
+        }
 
     }
 }
