@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         AddTask(navController = navController,Add_Task_ViewModel)
                     }
                 }
-
+                /*
                 GrabarAudioScreen(
                     onClickStGra = {
                         File(cacheDir, "audio.mp3").also {
@@ -80,6 +80,7 @@ class MainActivity : ComponentActivity() {
                     onClickSpRe = {player.stop()}
                 )
 
+                 */
             }
 
         }

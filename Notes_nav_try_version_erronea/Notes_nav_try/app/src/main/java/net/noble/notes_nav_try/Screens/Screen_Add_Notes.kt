@@ -74,7 +74,7 @@ import java.time.LocalDateTime
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.S)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,11 +84,10 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
     var name by remember { mutableStateOf("") }
     var date = LocalDateTime.now()
     var description by remember { mutableStateOf("") }
-
     val c = LocalContext.current
-    //val db = Room.databaseBuilder(c,NoteDB::class.java,Contract.DB.NAME).allowMainThreadQueries().build()
-    //val db = Room.databaseBuilder(context,NoteDB::class.java,Contract.DB.NAME).build()
     val DaoN =db.daoNotes()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
 
     if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(
@@ -109,8 +108,135 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         contentDescription = "",
                     )
                 })
-        }
-    ) {
+        },
+            bottomBar = {
+
+                BottomAppBar(
+
+                    //containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    //contentColor = MaterialTheme.colorScheme.primary,
+                ) {
+                    Row {
+                        Button(onClick = {showBottomSheet = true}) {
+                            Icon(Icons.Default.Add , contentDescription = "Add Imagen")
+                            Text(text = "Img")
+                        }
+                        Spacer(modifier = Modifier.size(22.dp))
+                        Button(onClick = {
+                            val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
+                            DaoN.newNote(n)
+                            Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        }) {
+                            Icon(Icons.Default.Done , contentDescription = "Save note")
+                            Text(text = "Guardar")
+                        }
+                    }
+                }
+            }
+    ) {innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+
+            }
+
+            // Screen content
+            if (showBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        showBottomSheet = false
+                    },
+                    sheetState = sheetState
+                ) {
+
+                    var uri : Uri? = null
+                    // 1
+                    var hasImage by remember {
+                        mutableStateOf(false)
+                    }
+                    var hasVideo by remember {
+                        mutableStateOf(false)
+                    }
+                    // 2
+                    var imageUri by remember {
+                        mutableStateOf<Uri?>(null)
+                    }
+
+
+                    val imagePicker = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent(),
+                        onResult = { uri ->
+                            // TODO
+                            // 3
+                            hasImage = uri != null
+                            imageUri = uri
+                        }
+                    )
+
+                    val cameraLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.TakePicture(),
+                        onResult = { success ->
+                            Log.d("IMG", hasImage.toString())
+                            Log.d("URI", imageUri.toString())
+                            if(success) imageUri = uri
+                            hasImage = success
+                        }
+                    )
+
+                    val videoLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.CaptureVideo(),
+                        onResult = { success ->
+                            hasVideo = success
+                        }
+                    )
+
+                    Box{}
+                    val context = LocalContext.current
+
+                    if ((hasImage or hasVideo) && imageUri != null) {
+                        // 5
+                        if(hasImage){
+                            AsyncImage(
+                                model = imageUri,
+                                modifier = Modifier.fillMaxWidth(),
+                                contentDescription = "Selected image",
+                            )
+                        }
+                        if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
+                    }
+                    Row {
+                        Spacer(modifier = Modifier.size(60.dp))
+                        Button(onClick = {
+                            uri = ComposeFileProvider.getImageUri(context)
+                            cameraLauncher.launch(uri)}
+                        ) {
+                            Icon(imageVector = Icons.Default.Camera, contentDescription = "Camera Button")
+                        }
+                        Spacer(modifier = Modifier.size(30.dp))
+                        Button(onClick = {imagePicker.launch("image/*")}) {
+                            Icon(imageVector = Icons.Default.Image, contentDescription = "Galery Button")
+                        }
+                        Spacer(modifier = Modifier.size(30.dp))
+                        Button(
+                            onClick = {
+                                val uri = ComposeFileProvider.getImageUri(context)
+                                videoLauncher.launch(uri)
+                                imageUri = uri
+                            },
+                        ) {
+                            Icon(imageVector = Icons.Default.Videocam, contentDescription = "Vidio Button")
+                        }
+                        Spacer(modifier = Modifier.size(30.dp))
+                    }
+                    // Sheet content
+                    Spacer(modifier = Modifier.size(50.dp))
+                }
+            }
+
+
             Column(
                 modifier = Modifier
                     .padding(60.dp)
@@ -139,6 +265,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         modifier = Modifier.width(375.dp),
                         placeholder = { Text("Description") })
                 }
+                /*
                 Row(Modifier.padding(vertical = 10.dp)) {
                     Button(onClick = {
                         val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
@@ -150,10 +277,9 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         Text(text = "Guardar Nota")
                     }
                 }
+                 */
             }
         }
-
-
     }else{
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -217,161 +343,6 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
-@ExperimentalMaterial3Api
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ScaffoldNotas() {
-
-    //variable
-    val c = LocalContext.current
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    //variables
-    var showBottomSheet by remember { mutableStateOf(false) }
-
-
-    Scaffold(
-        bottomBar = {
-
-            BottomAppBar(
-
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
-            ) {
-                Row {
-                    Button(onClick = {showBottomSheet = true}) {
-                        Icon(Icons.Default.Add , contentDescription = "Add Imagen")
-                        Text(text = "Img")
-                    }
-                    Spacer(modifier = Modifier.size(22.dp))
-                    Button(onClick = {
-                        //insercion
-                        scope.launch {
-                            /*
-                            val db = Room.databaseBuilder(c, NotasDatabase::class.java, "notas_database")
-                                .build()
-                            val g = Notas(0, "sdasda", "dfdf", "dfd",)
-                            db.NotaDao().insert(g)
-                        */
-                        }
-
-                        //insercion
-                    }) {
-                        Icon(Icons.Default.Done , contentDescription = "Save note")
-                        Text(text = "Guardar")
-                    }
-                }
-            }
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-
-        }
-
-        // Screen content
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
-                sheetState = sheetState
-            ) {
-
-                var uri : Uri? = null
-                // 1
-                var hasImage by remember {
-                    mutableStateOf(false)
-                }
-                var hasVideo by remember {
-                    mutableStateOf(false)
-                }
-                // 2
-                var imageUri by remember {
-                    mutableStateOf<Uri?>(null)
-                }
-
-
-                val imagePicker = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.GetContent(),
-                    onResult = { uri ->
-                        // TODO
-                        // 3
-                        hasImage = uri != null
-                        imageUri = uri
-                    }
-                )
-
-                val cameraLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.TakePicture(),
-                    onResult = { success ->
-                        Log.d("IMG", hasImage.toString())
-                        Log.d("URI", imageUri.toString())
-                        if(success) imageUri = uri
-                        hasImage = success
-                    }
-                )
-
-                val videoLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.CaptureVideo(),
-                    onResult = { success ->
-                        hasVideo = success
-                    }
-                )
-
-                Box{}
-                val context = LocalContext.current
-
-                if ((hasImage or hasVideo) && imageUri != null) {
-                    // 5
-                    if(hasImage){
-                        AsyncImage(
-                            model = imageUri,
-                            modifier = Modifier.fillMaxWidth(),
-                            contentDescription = "Selected image",
-                        )
-                    }
-                    if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
-                }
-
-                // Experimental
-                //val uri = ComposeFileProvider.getImageUri(applicationContext)
-                // FIn de lo Experimental
-
-                Row {
-                    Spacer(modifier = Modifier.size(60.dp))
-                    Button(onClick = {
-                        uri = ComposeFileProvider.getImageUri(context)
-                        cameraLauncher.launch(uri)}
-                    ) {
-                        Icon(imageVector = Icons.Default.Camera, contentDescription = "Camera Button")
-                    }
-                    Spacer(modifier = Modifier.size(30.dp))
-                    Button(onClick = {imagePicker.launch("image/*")}) {
-                        Icon(imageVector = Icons.Default.Image, contentDescription = "Galery Button")
-                    }
-                    Spacer(modifier = Modifier.size(30.dp))
-                    Button(
-                        onClick = {
-                            val uri = ComposeFileProvider.getImageUri(context)
-                            videoLauncher.launch(uri)
-                            imageUri = uri
-                        },
-                    ) {
-                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "Vidio Button")
-                    }
-                    Spacer(modifier = Modifier.size(30.dp))
-                }
-                // Sheet content
-                Spacer(modifier = Modifier.size(50.dp))
-            }
-        }
-    }
-}
 
 @Composable
 fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
