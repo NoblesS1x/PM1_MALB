@@ -49,7 +49,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,6 +77,20 @@ import java.time.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_Notes_ViewModel) {
+
+    var uri : Uri? = null
+    // 1
+    var hasImage by remember {
+        mutableStateOf(false)
+    }
+    var hasVideo by remember {
+        mutableStateOf(false)
+    }
+    // 2
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
     val state = addNotesViewmodel.state
     val windowInfo = rememberWindowInfo()
     var name by remember { mutableStateOf("") }
@@ -161,7 +177,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                     },
                     sheetState = sheetState
                 ) {
-
+                    /*
                     var uri : Uri? = null
                     // 1
                     var hasImage by remember {
@@ -174,6 +190,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                     var imageUri by remember {
                         mutableStateOf<Uri?>(null)
                     }
+                     */
 
 
                     val imagePicker = rememberLauncherForActivityResult(
@@ -205,7 +222,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
 
                     Box{}
                     val context = LocalContext.current
-
+                     /*
                     if ((hasImage or hasVideo) && imageUri != null) {
                         // 5
                         if(hasImage){
@@ -217,6 +234,8 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         }
                         if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
                     }
+                    */
+
                     Row {
                         Spacer(modifier = Modifier.size(60.dp))
                         Button(onClick = {
@@ -274,6 +293,21 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         maxLines = 10,
                         modifier = Modifier.width(375.dp),
                         placeholder = { Text("Description") })
+                }
+
+                Box(modifier = Modifier.scale(0.8f)){
+                    val context = LocalContext.current
+                    if ((hasImage or hasVideo) && imageUri != null) {
+                        // 5
+                        if(hasImage){
+                            AsyncImage(
+                                model = imageUri,
+                                modifier = Modifier.fillMaxWidth(),
+                                contentDescription = "Selected image",
+                            )
+                        }
+                        if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
+                    }
                 }
             }
         }

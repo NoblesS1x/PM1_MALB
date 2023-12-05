@@ -114,12 +114,6 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 .fillMaxSize()
                 .padding(top = 120.dp)){
                 itemsIndexed(listnote){pos, w ->
-                    /*
-                    Row(modifier = Modifier.fillMaxWidth()){
-                        Text(text ="${w.TiteNote}")
-                        Text(text ="${w.DateNote}")
-                    }
-                     */
                     Card(modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 5.dp, horizontal = 10.dp)
