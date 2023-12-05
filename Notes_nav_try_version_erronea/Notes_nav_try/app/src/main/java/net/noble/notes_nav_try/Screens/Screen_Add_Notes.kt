@@ -265,19 +265,6 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         modifier = Modifier.width(375.dp),
                         placeholder = { Text("Description") })
                 }
-                /*
-                Row(Modifier.padding(vertical = 10.dp)) {
-                    Button(onClick = {
-                        val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
-                        DaoN.newNote(n)
-                        Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
-
-                    }) {
-                        Text(text = "Guardar Nota")
-                    }
-                }
-                 */
             }
         }
     }else{
