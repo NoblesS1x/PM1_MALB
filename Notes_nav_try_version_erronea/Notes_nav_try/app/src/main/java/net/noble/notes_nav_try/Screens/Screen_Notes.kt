@@ -1,13 +1,17 @@
 package net.noble.notes_nav_try.Screens
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,27 +20,38 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.noble.notes_nav_try.MainActivity
+import net.noble.notes_nav_try.R
 import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Notes.Notes_ViewModel
 import net.noble.notes_nav_try.WindowInfo
@@ -45,11 +60,12 @@ import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
 import net.noble.notes_nav_try.rememberWindowInfo
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ResourceType")
 @ExperimentalMaterial3Api
 @Composable
 fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewModel) {
     val state = notesVievmodel.state
+    val scope = rememberCoroutineScope()
     if(state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -62,7 +78,10 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
-                FloatingActionButton(onClick = {navController.navigate(Router.ADD_Notes.route)}, modifier = Modifier.padding(end = 30.dp)) {
+                FloatingActionButton(onClick = {
+                    MainActivity.GlobalVars.id=-1
+                    navController.navigate(Router.ADD_Notes.route)
+                }) {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = "")
                 }
                 /*
@@ -89,15 +108,112 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 }
             }
              */
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 120.dp)){
+
+
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 120.dp)){
                 itemsIndexed(listnote){pos, w ->
+                    /*
                     Row(modifier = Modifier.fillMaxWidth()){
                         Text(text ="${w.TiteNote}")
                         Text(text ="${w.DateNote}")
                     }
-                    Divider()
+                     */
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                        .clickable {
+                            navController.navigate(Router.ADD_Notes.route)
+                            MainActivity.GlobalVars.id = w.id
+                        }
+
+                    ){
+                        Row{
+                            var NoteDesc = remember{ mutableStateOf( false)}
+                            var eliminarConfirmaciónrequerida by rememberSaveable { mutableStateOf(false) }
+                            Column(modifier = Modifier
+                                .fillMaxWidth(0.75f)
+                                .padding(horizontal = 5.dp)){
+                                Text(text ="Titulo: ${w.TiteNote}", maxLines = 1)
+                                Row{
+                                    Text(text = "Fecha: ")
+                                    Text(text ="${w.DateNote}", maxLines = 1)
+                                }
+                                if(NoteDesc.value){
+                                    Column {
+                                        Text(text = "Descripccion: ")
+                                        Text(text = "${w.NoteDescription}")    
+                                    }
+                                    
+                                }
+                            }
+                            Column {
+                                IconButton(onClick = {
+                                    NoteDesc.value = !NoteDesc.value
+                                }) {
+                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = "Borrar",Modifier.rotate(if(NoteDesc.value)180f else 360f)
+                                    ) }
+                            }
+                            Column {
+
+                                if (eliminarConfirmaciónrequerida) {
+                                    mostrarDialogoEliminacion(
+                                        confirmarEliminacion = {
+                                            db.daoNotes().deleteNote(w.id.toString())
+                                            navController.navigate(Router.NOTES.route)
+                                            eliminarConfirmaciónrequerida = false
+                                        },
+                                        cancelarEliminacion = {
+                                            eliminarConfirmaciónrequerida = false
+                                        },
+                                    )
+                                }
+                                IconButton(onClick = {
+                                    eliminarConfirmaciónrequerida = true
+                                }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") }
+                            }
+                        }
+
+
+
+                    }
+                    //Divider()
                 }
             }
+
+
+
+            //carga de la lista
+            /*
+            scope.launch {
+                db.NotaDao().getNotas()
+            }
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 20.dp)
+                .padding(bottom = 90.dp)){
+                itemsIndexed(listnote){pos, w ->
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .height(100.dp)
+                        .clickable { navController.navigate("/${w.id}") }){
+                        Text(text ="${w.title}", maxLines = 1, style = MaterialTheme.typography.titleLarge)
+                        Text(text ="${w.body}", maxLines = 1, style=MaterialTheme.typography.bodyMedium)
+
+                        IconButton(modifier = Modifier.padding(100.dp),onClick = {}) {
+                            Icon(painter= painterResource(id= R.drawable.baseline_delete), contentDescription = "Borrar",tint= MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+
+                }
+            }
+
+        }
+             */
+        //carga de la lista
+
             Canvas(modifier = Modifier.fillMaxSize()) {
 
 
@@ -150,6 +266,7 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 }
             }
 
+
         }//Scaffold
 }else{
         Scaffold(
@@ -184,7 +301,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
             }
 
              */
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 120.dp)){
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 120.dp)){
                 itemsIndexed(listnote){pos, w ->
                     Row(modifier = Modifier.fillMaxWidth()){
                         Text(text ="${w.TiteNote}")
@@ -245,6 +364,30 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
     }
 
 }//finfun
+
+
+@Composable
+private fun mostrarDialogoEliminacion(
+    confirmarEliminacion: () -> Unit,
+    cancelarEliminacion: () -> Unit,
+) {
+    AlertDialog(onDismissRequest = {  },
+        title = { Text("Confirmar eliminación") },
+        text = { Text("¿Estás seguro de que deseas eliminar esta nota?") },
+        modifier = Modifier.padding(16.dp),
+        dismissButton = {
+            TextButton(onClick = cancelarEliminacion  ) {
+                Text(text = "Cancelar")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = confirmarEliminacion ) {
+                Text(text = "Si, eliminar")
+            }
+        })
+}
+
+
 
 
 

@@ -14,9 +14,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import net.noble.notes_nav_try.Screens.AddNotes
 import net.noble.notes_nav_try.Screens.AddTask
-import net.noble.notes_nav_try.Screens.AndroidAudioPlayer
-import net.noble.notes_nav_try.Screens.AndroidAudioRecorder
-import net.noble.notes_nav_try.Screens.GrabarAudioScreen
+import net.noble.notes_nav_try.Multimedia.AndroidAudioPlayer
+import net.noble.notes_nav_try.Multimedia.AndroidAudioRecorder
 import net.noble.notes_nav_try.ui.theme.Notes_nav_tryTheme
 import net.noble.notes_nav_try.Screens.Notes
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
@@ -30,6 +29,7 @@ import java.io.File
 class MainActivity : ComponentActivity() {
     object GlobalVars {
         var rectColor = Color(0xFFFFFBFE)
+        var id = -1
     }
     private val recorder by lazy {
         AndroidAudioRecorder(applicationContext)
@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
         val Notes_ViewModel by viewModels<Notes_ViewModel>()
         val Add_Notes_ViewModel by viewModels<Add_Notes_ViewModel>()
         val Add_Task_ViewModel by viewModels<Add_Task_ViewModel>()
+
         setContent {
             Notes_nav_tryTheme {
                 val navController = rememberNavController()

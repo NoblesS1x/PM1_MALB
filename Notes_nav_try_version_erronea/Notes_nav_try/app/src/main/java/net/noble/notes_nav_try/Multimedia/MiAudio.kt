@@ -1,4 +1,4 @@
-package net.noble.notes_nav_try.Screens
+package net.noble.notes_nav_try.Multimedia
 
 import android.Manifest
 import android.content.Context
@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 //import com.google.accompanistnist.permissions.rememberPermissionState
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

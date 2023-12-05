@@ -28,10 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="net.noble.notes_nav_try.Screens.notificacionProgramada"
+        <receiver android:name="net.noble.notes_nav_try.Multimedia.notificacionProgramada"
             android:enabled="true"/>
         <provider
-            android:name="net.noble.notes_nav_try.Screens.ComposeFileProvider"
+            android:name="net.noble.notes_nav_try.Multimedia.ComposeFileProvider"
             android:authorities="net.noble.notes_nav_try.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">

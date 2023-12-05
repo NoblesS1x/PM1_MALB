@@ -1,5 +1,6 @@
 package net.noble.notes_nav_try.Screens
 
+import net.noble.notes_nav_try.Multimedia.ComposeFileProvider
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
@@ -8,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PlayArrow
@@ -37,10 +36,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -49,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +59,7 @@ import coil.compose.AsyncImage
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
-import kotlinx.coroutines.launch
+import net.noble.notes_nav_try.MainActivity
 import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
 import net.noble.notes_nav_try.WindowInfo
@@ -84,6 +80,12 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
     var name by remember { mutableStateOf("") }
     var date = LocalDateTime.now()
     var description by remember { mutableStateOf("") }
+
+    if(MainActivity.GlobalVars.id !=-1){
+        val NotesData = db.daoNotes().getOne(MainActivity.GlobalVars.id.toString())
+     name = NotesData.TiteNote
+     description = NotesData.NoteDescription
+    }
     val c = LocalContext.current
     val DaoN =db.daoNotes()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -123,10 +125,18 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         }
                         Spacer(modifier = Modifier.size(22.dp))
                         Button(onClick = {
-                            val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
-                            DaoN.newNote(n)
-                            Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
+                            if(MainActivity.GlobalVars.id !=-1){
+                                DaoN.updateNote(MainActivity.GlobalVars.id.toString(),name,date.toString(),description)
+                                Toast.makeText( c,"Nota actualizada", Toast.LENGTH_SHORT).show()
+                                MainActivity.GlobalVars.id = -1
+                                //navController.navigate(Router.NOTES.route)
+                                navController.popBackStack()
+                            }else{
+                                val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
+                                DaoN.newNote(n)
+                                Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
+                                navController.popBackStack()
+                            }
                         }) {
                             Icon(Icons.Default.Done , contentDescription = "Save note")
                             Text(text = "Guardar")
@@ -329,7 +339,6 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
         }
     }
 }
-
 
 @Composable
 fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {

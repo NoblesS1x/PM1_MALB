@@ -1,4 +1,4 @@
-package net.noble.notes_nav_try.Screens
+package net.noble.notes_nav_try.Multimedia
 
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 //import com.example.notas.R
-import net.noble.notes_nav_try.Screens.Constants.channelId
-import okhttp3.internal.notify
+import net.noble.notes_nav_try.Multimedia.Constants.channelId
 
 class notificacionProgramada:BroadcastReceiver() {
     companion object{

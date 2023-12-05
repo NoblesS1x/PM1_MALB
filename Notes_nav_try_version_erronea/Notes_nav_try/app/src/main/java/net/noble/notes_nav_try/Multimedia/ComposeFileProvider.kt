@@ -1,4 +1,4 @@
-package net.noble.notes_nav_try.Screens
+package net.noble.notes_nav_try.Multimedia
 
 import android.content.Context
 import android.net.Uri
