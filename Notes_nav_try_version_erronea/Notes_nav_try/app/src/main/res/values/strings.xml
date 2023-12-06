@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Notes_nav_try</string>
+    <string name="nueva_nota">Nueva Nota</string>
+    <string name="add_imagen">Add Imagen</string>
+    <string name="guardar_nota">Guardar Nota</string>
+    <string name="guardar">Guardar</string>
+    <string name="boton_de_camara">Boton de camara</string>
+    <string name="boton_de_galeria">Boton de galeria</string>
+    <string name="boton_video">Boton video</string>
+    <string name="titulo_de_nota">Titulo de nota</string>
+    <string name="descripcion">Descripción</string>
+    <string name="imagen_seleccionada">Imagen seleccionada</string>
+    <string name="pausa">Pausa</string>
+    <string name="reproducir">Reproducir</string>
 </resources>

@@ -51,8 +51,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -62,8 +62,10 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import net.noble.notes_nav_try.MainActivity
+import net.noble.notes_nav_try.R
 import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
+import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Notes.Notes_ViewModel
 import net.noble.notes_nav_try.WindowInfo
 import net.noble.notes_nav_try.localdatabase.NotesData.NoteDB
 import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
@@ -114,7 +116,8 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
             TopAppBar(
                 title ={ Text(
                     modifier = Modifier.padding(start = 80.dp), textAlign = TextAlign.Center,
-                    text = "Nueva Nota")},
+                    text = stringResource(R.string.nueva_nota)
+                )},
                 navigationIcon = {
                     Icon(
                         modifier = Modifier
@@ -130,13 +133,12 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
             bottomBar = {
 
                 BottomAppBar(
-
                     //containerColor = MaterialTheme.colorScheme.primaryContainer,
                     //contentColor = MaterialTheme.colorScheme.primary,
                 ) {
                     Row {
                         Button(onClick = {showBottomSheet = true}) {
-                            Icon(Icons.Default.Add , contentDescription = "Add Imagen")
+                            Icon(Icons.Default.Add , contentDescription = stringResource(R.string.add_imagen))
                             Text(text = "Img")
                         }
                         Spacer(modifier = Modifier.size(22.dp))
@@ -154,8 +156,8 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                                 navController.popBackStack()
                             }
                         }) {
-                            Icon(Icons.Default.Done , contentDescription = "Save note")
-                            Text(text = "Guardar")
+                            Icon(Icons.Default.Done , contentDescription = stringResource(R.string.guardar_nota))
+                            Text(text = stringResource(R.string.guardar))
                         }
                     }
                 }
@@ -242,11 +244,17 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                             uri = ComposeFileProvider.getImageUri(context)
                             cameraLauncher.launch(uri)}
                         ) {
-                            Icon(imageVector = Icons.Default.Camera, contentDescription = "Camera Button")
+                            Icon(imageVector = Icons.Default.Camera, contentDescription = stringResource(
+                                R.string.boton_de_camara
+                            )
+                            )
                         }
                         Spacer(modifier = Modifier.size(30.dp))
                         Button(onClick = {imagePicker.launch("image/*")}) {
-                            Icon(imageVector = Icons.Default.Image, contentDescription = "Galery Button")
+                            Icon(imageVector = Icons.Default.Image, contentDescription = stringResource(
+                                R.string.boton_de_galeria
+                            )
+                            )
                         }
                         Spacer(modifier = Modifier.size(30.dp))
                         Button(
@@ -256,7 +264,10 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                                 imageUri = uri
                             },
                         ) {
-                            Icon(imageVector = Icons.Default.Videocam, contentDescription = "Vidio Button")
+                            Icon(imageVector = Icons.Default.Videocam, contentDescription = stringResource(
+                                R.string.boton_video
+                            )
+                            )
                         }
                         Spacer(modifier = Modifier.size(30.dp))
                     }
@@ -278,7 +289,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                     TextField(value = name, onValueChange = {
                         name = it
                     }, maxLines = 1, modifier = Modifier.width(375.dp),
-                        placeholder = { Text("Titulo de nota") })
+                        placeholder = { Text(stringResource(R.string.titulo_de_nota)) })
                 }
                 Row(Modifier.padding(vertical = 10.dp)) {
                     Text(text = date.toString())
@@ -292,7 +303,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         },
                         maxLines = 10,
                         modifier = Modifier.width(375.dp),
-                        placeholder = { Text("Description") })
+                        placeholder = { Text(stringResource(R.string.descripcion)) })
                 }
 
                 Box(modifier = Modifier.scale(0.8f)){
@@ -303,7 +314,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                             AsyncImage(
                                 model = imageUri,
                                 modifier = Modifier.fillMaxWidth(),
-                                contentDescription = "Selected image",
+                                contentDescription = stringResource(R.string.imagen_seleccionada),
                             )
                         }
                         if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
@@ -409,7 +420,7 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
     ) {
         Icon(
             imageVector = if (isPlaying) Icons.Filled.Refresh else Icons.Filled.PlayArrow,
-            contentDescription = if (isPlaying) "Pause" else "Play",
+            contentDescription = if (isPlaying) stringResource(R.string.pausa) else stringResource(R.string.reproducir),
             tint = Color.White,
             modifier = Modifier.size(48.dp)
         )

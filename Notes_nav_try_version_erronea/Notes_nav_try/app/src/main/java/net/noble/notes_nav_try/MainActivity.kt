@@ -34,9 +34,6 @@ class MainActivity : ComponentActivity() {
     object GlobalVars {
         var rectColor = Color(0xFFFFFBFE)
         var id = -1
-
-
-
     }
     private val recorder by lazy {
         AndroidAudioRecorder(applicationContext)

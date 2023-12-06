@@ -65,7 +65,8 @@ import net.noble.notes_nav_try.rememberWindowInfo
 @Composable
 fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewModel) {
     val state = notesVievmodel.state
-    val scope = rememberCoroutineScope()
+
+
     if(state.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
