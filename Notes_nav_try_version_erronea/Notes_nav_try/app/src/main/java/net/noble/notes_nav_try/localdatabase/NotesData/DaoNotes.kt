@@ -22,7 +22,8 @@ interface DaoNotes {
     //update
     @Query("UPDATE ${Contract.NotesTbl.TABLE_NAME} SET TiteNote = :Tite,DateNote = :Date,NoteDescription = :Desc WHERE id= :id" )
     fun updateNote(id: String,Tite: String,Date:String,Desc: String)
+    //Buscar coincidencia
 
-
-
+    @Query("SELECT * FROM ${Contract.NotesTbl.TABLE_NAME} WHERE TiteNote LIKE :TiteNote")
+    fun coincidencia(TiteNote: String)
 }

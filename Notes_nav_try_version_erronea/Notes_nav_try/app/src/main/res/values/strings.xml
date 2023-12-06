@@ -17,4 +17,8 @@
     <string name="descripccion">"Descripccion: "</string>
     <string name="borrar">Borrar</string>
     <string name="buscar">Buscar</string>
+    <string name="editar_nota">Editar Nota</string>
+    <string name="todo">Todo</string>
+    <string name="notas">Notas</string>
+    <string name="tareas">Tareas</string>
 </resources>

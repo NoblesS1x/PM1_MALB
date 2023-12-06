@@ -98,17 +98,17 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
     var name by remember { mutableStateOf("") }
     var date = LocalDateTime.now()
     var description by remember { mutableStateOf("") }
-
+    var title = stringResource(R.string.nueva_nota)
     if(MainActivity.GlobalVars.id !=-1){
         val NotesData = db.daoNotes().getOne(MainActivity.GlobalVars.id.toString())
      name = NotesData.TiteNote
      description = NotesData.NoteDescription
+        title = stringResource(R.string.editar_nota)
     }
     val c = LocalContext.current
     val DaoN =db.daoNotes()
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
-
     if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -116,7 +116,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
             TopAppBar(
                 title ={ Text(
                     modifier = Modifier.padding(start = 80.dp), textAlign = TextAlign.Center,
-                    text = stringResource(R.string.nueva_nota)
+                    text = title
                 )},
                 navigationIcon = {
                     Icon(
@@ -329,7 +329,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                 TopAppBar(
                     title ={ Text(
                         modifier = Modifier.padding(start = 80.dp), textAlign = TextAlign.Center,
-                        text = "Nueva Nota")},
+                        text = title)},
                     navigationIcon = {
                         Icon(
                             modifier = Modifier
@@ -426,3 +426,7 @@ fun VideoPlayer(videoUri: Uri, modifier: Modifier = Modifier.fillMaxWidth()) {
         )
     }
 }
+
+
+
+

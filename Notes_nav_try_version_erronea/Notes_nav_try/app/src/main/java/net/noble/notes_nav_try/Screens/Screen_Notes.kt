@@ -163,9 +163,16 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 .padding(65.dp)
                 .verticalScroll(rememberScrollState())) {
                 Row(verticalAlignment = Alignment.Top,horizontalArrangement = Arrangement.SpaceAround) {
-                    Button(onClick = { /*TODO*/ }) { Text(text = "Todo") }
-                    Button(onClick = { /*TODO*/ }) { Text(text = "Notas") }
-                    Button(onClick = { /*TODO*/ }) { Text(text = "Tareas") }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.todo))
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.notas))
+                    }
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.tareas))
+                    }
+
                 }//EndRow
             }//EndColumn
 
@@ -265,21 +272,23 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 }
             }
 
-                Row(modifier = Modifier.padding(65.dp),
+                Row(modifier = Modifier
+                    .padding(65.dp)
+                    .fillMaxWidth(),
                     verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Todo")
+                    Button(modifier = Modifier.fillMaxWidth(0.33f),onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.todo))
                     }
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Notas")
+                    Button(modifier = Modifier.fillMaxWidth(0.50f),onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.notas))
                     }
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Tareas")
+                    Button(modifier = Modifier.fillMaxWidth(),onClick = { /*TODO*/ }) {
+                        Text(text = stringResource(R.string.tareas))
                     }
                 }
-            //}
+
 
         }//Scaffold
 
