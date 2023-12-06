@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import net.noble.notes_nav_try.MainActivity
@@ -65,16 +66,10 @@ import net.noble.notes_nav_try.rememberWindowInfo
 @Composable
 fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewModel) {
     val state = notesVievmodel.state
-
-
-    if(state.isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    }
     var listnote = mutableListOf<NotesData>()
     listnote = db.daoNotes().getListNote().toMutableList()
     val windowInfo = rememberWindowInfo()
+
     if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -82,39 +77,12 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 FloatingActionButton(onClick = {
                     MainActivity.GlobalVars.id=-1
                     navController.navigate(Router.ADD_Notes.route)
-                }) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-                }
-                /*
-                FloatingActionButton(onClick = {navController.navigate(Router.ADD_Task.route)}) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-                }
-                
-                 */
-            }//floating button
-        ) {
-            /*
-            LazyColumn(
-                modifier = Modifier.size(400.dp, 800.dp),
-                contentPadding = PaddingValues(
-                    top = 115.dp,
-                    bottom =  115.dp)
-            ) {
-                items(state.Notes){
-                    Column(modifier = Modifier.padding( start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center){
-                        Text(text = it.TitleNote)
-                        Text(text = it.NoteDate)
-                        Divider()
-                    }
-                }
-            }
-             */
-
+                }) { Icon(imageVector = Icons.Filled.Add, contentDescription = "") }
+            }){
 
             LazyColumn(modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 120.dp)){
-                itemsIndexed(listnote){pos, w ->
+                .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
                     Card(modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -130,26 +98,28 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                             Column(modifier = Modifier
                                 .fillMaxWidth(0.75f)
                                 .padding(horizontal = 5.dp)){
-                                Text(text ="Titulo: ${w.TiteNote}", maxLines = 1)
                                 Row{
-                                    Text(text = "Fecha: ")
-                                    Text(text ="${w.DateNote}", maxLines = 1)
-                                }
+                                    Text(text = stringResource(R.string.titulo))
+                                    Text(text ="${w.TiteNote}", maxLines = 1) }
+
+                                Row{
+                                    Text(text = stringResource(R.string.fecha))
+                                    Text(text ="${w.DateNote}", maxLines = 1) }
+
                                 if(NoteDesc.value){
                                     Column {
-                                        Text(text = "Descripccion: ")
-                                        Text(text = "${w.NoteDescription}")    
-                                    }
-                                    
-                                }
-                            }
+                                        Text(text = stringResource(R.string.descripccion))
+                                        Text(text = "${w.NoteDescription}") } } }
+
                             Column {
                                 IconButton(onClick = {
                                     NoteDesc.value = !NoteDesc.value
                                 }) {
-                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = "Borrar",Modifier.rotate(if(NoteDesc.value)180f else 360f)
-                                    ) }
-                            }
+                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(
+                                        R.string.borrar
+                                    ),Modifier.rotate(if(NoteDesc.value)180f else 360f)
+                                    ) } }//EndColumn
+
                             Column {
 
                                 if (eliminarConfirmaciónrequerida) {
@@ -157,159 +127,116 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                         confirmarEliminacion = {
                                             db.daoNotes().deleteNote(w.id.toString())
                                             navController.navigate(Router.NOTES.route)
-                                            eliminarConfirmaciónrequerida = false
-                                        },
-                                        cancelarEliminacion = {
-                                            eliminarConfirmaciónrequerida = false
-                                        },
-                                    )
-                                }
+                                            eliminarConfirmaciónrequerida = false },
+
+                                        cancelarEliminacion = { eliminarConfirmaciónrequerida = false })}
+
                                 IconButton(onClick = {
                                     eliminarConfirmaciónrequerida = true
-                                }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") }
-                            }
-                        }
-
-
-
-                    }
-                    //Divider()
-                }
-            }
-
-
-
-            //carga de la lista
-            /*
-            scope.launch {
-                db.NotaDao().getNotas()
-            }
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 20.dp)
-                .padding(bottom = 90.dp)){
-                itemsIndexed(listnote){pos, w ->
-                    Card(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .height(100.dp)
-                        .clickable { navController.navigate("/${w.id}") }){
-                        Text(text ="${w.title}", maxLines = 1, style = MaterialTheme.typography.titleLarge)
-                        Text(text ="${w.body}", maxLines = 1, style=MaterialTheme.typography.bodyMedium)
-
-                        IconButton(modifier = Modifier.padding(100.dp),onClick = {}) {
-                            Icon(painter= painterResource(id= R.drawable.baseline_delete), contentDescription = "Borrar",tint= MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-
-                }
-            }
-
-        }
-             */
-        //carga de la lista
+                                }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") } }//EndColumn
+                        }//EndRow
+                    }//EndCard
+                }//EndItemsIndexed
+            }//EndLazyColumn
 
             Canvas(modifier = Modifier.fillMaxSize()) {
-
-
                 translate(left = 0f, top = 0f) {
                     drawRoundRect(
                         color =MainActivity.GlobalVars.rectColor,
                         size = Size(1100f, 320f),
-                    )
-                }
-            }
-            var name by remember {
-                mutableStateOf("")
-            }
-            Column(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
+                    ) } }//EndCanvas
+
+            var name by remember { mutableStateOf("") }
+
+            Column(modifier = Modifier
+                .padding(5.dp)
+                .verticalScroll(rememberScrollState()),
+                   horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top)
+            {
                 Row {
                     TextField(value = name, onValueChange = {
                         name = it
                     }, modifier = Modifier.width(375.dp),
-                        placeholder = { Text("Buscar") })
-
-                }
-            }
-
-            Column(
-                modifier = Modifier/*Modifier.fillMaxSize()*//*Modifier.size(250.dp, 100.dp)*//*Modifier*/
-                    .padding(65.dp)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    //horizontalArrangement = Arrangement.spacedBy(space = 1.dp)
-                    //horizontalArrangement = Arrangement.SpaceBetween
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Todo")
-                    }
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Notas")
-                    }
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Tareas")
-                    }
-                }
-            }
-
+                        placeholder = { Text(stringResource(R.string.buscar)) }) }//EndRow
+            }//EndColumn
+            Column(modifier = Modifier
+                .padding(65.dp)
+                .verticalScroll(rememberScrollState())) {
+                Row(verticalAlignment = Alignment.Top,horizontalArrangement = Arrangement.SpaceAround) {
+                    Button(onClick = { /*TODO*/ }) { Text(text = "Todo") }
+                    Button(onClick = { /*TODO*/ }) { Text(text = "Notas") }
+                    Button(onClick = { /*TODO*/ }) { Text(text = "Tareas") }
+                }//EndRow
+            }//EndColumn
 
         }//Scaffold
 }else{
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
-                FloatingActionButton(onClick = {navController.navigate(Router.ADD_Notes.route)}) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-                }
-            }//floating button
-        ) {
-            /*
-            LazyColumn(
-                modifier = Modifier.size(835.dp, 800.dp),
-                contentPadding = PaddingValues(
-                    top = 115.dp,
-                    bottom =  115.dp)
-            ) {
-                items(state.Notes){
-                    Column(modifier = Modifier.padding( start = 15.dp, end = 15.dp), verticalArrangement = Arrangement.Center){
-                        Row{
-                            Text(text = it.TitleNote)
-                            Text(text = it.NoteDate)
-                        }
-                        Row{
-                            Text(text = it.NoteContent)
-                        }
-
-
-                        Divider()
-                    }
-                }
-            }
-
-             */
+                FloatingActionButton(onClick = {
+                    MainActivity.GlobalVars.id=-1
+                    navController.navigate(Router.ADD_Notes.route)
+                }) { Icon(imageVector = Icons.Filled.Add, contentDescription = "") }
+            }){
             LazyColumn(modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 120.dp)){
-                itemsIndexed(listnote){pos, w ->
-                    Row(modifier = Modifier.fillMaxWidth()){
-                        Text(text ="${w.TiteNote}")
-                        Text(text ="${w.DateNote}")
+                .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
+                Card(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp, horizontal = 10.dp)
+                    .clickable {
+                        navController.navigate(Router.ADD_Notes.route)
+                        MainActivity.GlobalVars.id = w.id
                     }
-                    Row(){
-                        Text(text ="${w.NoteDescription}")
-                    }
-                    Divider()
-                }
-            }
+
+                ){
+                    Row{
+                        var NoteDesc = remember{ mutableStateOf( false)}
+                        var eliminarConfirmaciónrequerida by rememberSaveable { mutableStateOf(false) }
+                        Column(modifier = Modifier
+                            .fillMaxWidth(0.85f)
+                            .padding(horizontal = 5.dp)){
+                            Row{
+                                Text(text = stringResource(R.string.titulo))
+                                Text(text ="${w.TiteNote}", maxLines = 1) }
+
+                            Row{
+                                Text(text = stringResource(R.string.fecha))
+                                Text(text ="${w.DateNote}", maxLines = 1) }
+
+                            if(NoteDesc.value){
+                                Column {
+                                    Text(text = stringResource(R.string.descripccion))
+                                    Text(text = "${w.NoteDescription}") } } }
+
+                        Column {
+                            IconButton(onClick = {
+                                NoteDesc.value = !NoteDesc.value
+                            }) {
+                                Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(
+                                    R.string.borrar
+                                ),Modifier.rotate(if(NoteDesc.value)180f else 360f)
+                                ) } }//EndColumn
+
+                        Column {
+
+                            if (eliminarConfirmaciónrequerida) {
+                                mostrarDialogoEliminacion(
+                                    confirmarEliminacion = {
+                                        db.daoNotes().deleteNote(w.id.toString())
+                                        navController.navigate(Router.NOTES.route)
+                                        eliminarConfirmaciónrequerida = false },
+
+                                    cancelarEliminacion = { eliminarConfirmaciónrequerida = false })}
+
+                            IconButton(onClick = {
+                                eliminarConfirmaciónrequerida = true
+                            }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") } }//EndColumn
+                    }//EndRow
+                }//EndCard
+            }//EndItemsIndexed
+        }//EndLazyColumn
 
             Canvas(modifier = Modifier.fillMaxSize()) {
                 translate(left = 0f, top = 0f) {
