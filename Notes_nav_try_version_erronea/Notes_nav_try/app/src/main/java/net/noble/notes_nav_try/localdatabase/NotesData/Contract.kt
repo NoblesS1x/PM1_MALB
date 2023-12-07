@@ -10,5 +10,8 @@ class Contract {
         const val NAME = "TiteNote"
         const val DATE = "DateNote"
         const val DESCRIPTION = "NoteDescription"
+        const val PICTURE = "UriPicture"
+        const val VIDEO = "UriVideo"
+        const val AUDIO = "UriAudio"
     }
 }

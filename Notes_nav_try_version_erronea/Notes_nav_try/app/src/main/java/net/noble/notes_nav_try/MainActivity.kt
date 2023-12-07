@@ -27,6 +27,7 @@ import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Task.Add_Task_View
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Notes.Notes_ViewModel
 import net.noble.notes_nav_try.localdatabase.NotesData.Contract
 import net.noble.notes_nav_try.localdatabase.NotesData.NoteDB
+import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
 import java.io.File
 
 
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
     object GlobalVars {
         var rectColor = Color(0xFFFFFBFE)
         var id = -1
+        var od = NotesData(0,"","", null.toString(),"","","")
     }
     private val recorder by lazy {
         AndroidAudioRecorder(applicationContext)

@@ -31,6 +31,8 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.rounded.AcUnit
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,6 +63,8 @@ import coil.compose.AsyncImage
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
+import com.jai.multifabbutton.compose.FabItem
+import com.jai.multifabbutton.compose.MultiFloatingActionButton
 import net.noble.notes_nav_try.MainActivity
 import net.noble.notes_nav_try.R
 import net.noble.notes_nav_try.Router
@@ -144,13 +148,13 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         Spacer(modifier = Modifier.size(22.dp))
                         Button(onClick = {
                             if(MainActivity.GlobalVars.id !=-1){
-                                DaoN.updateNote(MainActivity.GlobalVars.id.toString(),name,date.toString(),description)
+                                DaoN.updateNote(MainActivity.GlobalVars.id.toString(),name,date.toString(),description,if(hasImage==true)imageUri.toString() else "vacio",if(hasVideo==true)imageUri.toString() else "vacio","vacio")
                                 Toast.makeText( c,"Nota actualizada", Toast.LENGTH_SHORT).show()
                                 MainActivity.GlobalVars.id = -1
                                 //navController.navigate(Router.NOTES.route)
                                 navController.popBackStack()
                             }else{
-                                val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
+                                val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description, NotePicture = if(hasImage==true)imageUri.toString() else "vacio", NoteVideo = if(hasVideo==true)imageUri.toString() else "vacio", NoteAudio = "vacio")
                                 DaoN.newNote(n)
                                 Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
                                 navController.popBackStack()
@@ -160,6 +164,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                             Text(text = stringResource(R.string.guardar))
                         }
                     }
+
                 }
             }
     ) {innerPadding ->
@@ -320,6 +325,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         if(hasVideo) {VideoPlayer(videoUri = imageUri!!)}
                     }
                 }
+
             }
         }
     }else{
@@ -369,7 +375,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                 }
                 Row(Modifier.padding(vertical = 10.dp)) {
                     Button(onClick = {
-                        val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description)
+                        val n = NotesData(0, TiteNote = name, DateNote = date.toString(), NoteDescription = description, NotePicture = if(hasImage==true)imageUri.toString() else "vacio", NoteVideo = if(hasVideo==true)imageUri.toString() else "vacio", NoteAudio = "")
                         DaoN.newNote(n)
                         Toast.makeText( c,"Nota guardada", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()

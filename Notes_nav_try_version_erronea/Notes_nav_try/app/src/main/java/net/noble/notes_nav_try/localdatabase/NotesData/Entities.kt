@@ -11,5 +11,8 @@ data class NotesData(
     @ColumnInfo(name = Contract.NotesTbl.NAME) val TiteNote: String,
     //@ColumnInfo(name = Contract.NotesTbl.DATE) val DateNote: LocalDate,
     @ColumnInfo(name = Contract.NotesTbl.DATE) val DateNote: String,
-    @ColumnInfo(name = Contract.NotesTbl.DESCRIPTION) val NoteDescription: String
+    @ColumnInfo(name = Contract.NotesTbl.DESCRIPTION) val NoteDescription: String,
+    @ColumnInfo(name = Contract.NotesTbl.PICTURE) val NotePicture: String,
+    @ColumnInfo(name = Contract.NotesTbl.VIDEO) val NoteVideo: String,
+    @ColumnInfo(name = Contract.NotesTbl.AUDIO) val NoteAudio: String
 )

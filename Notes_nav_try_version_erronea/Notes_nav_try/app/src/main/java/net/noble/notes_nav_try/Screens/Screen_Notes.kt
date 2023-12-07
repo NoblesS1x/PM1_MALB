@@ -22,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.rounded.AcUnit
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -50,7 +52,11 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.jai.multifabbutton.compose.FabItem
+import com.jai.multifabbutton.compose.MultiFloatingActionButton
 import net.noble.notes_nav_try.MainActivity
 import net.noble.notes_nav_try.R
 import net.noble.notes_nav_try.Router
@@ -74,24 +80,21 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
+                /*
                 FloatingActionButton(onClick = {
                     MainActivity.GlobalVars.id=-1
                     navController.navigate(Router.ADD_Notes.route)
                 }) { Icon(imageVector = Icons.Filled.Add, contentDescription = "") }
+                 */
+                MultiFloatingActionButton(fabIcon = Icons.Rounded.Add, items = arrayListOf(
+                    FabItem(icon =  Icons.Rounded.AcUnit, label = "") {}), navController = navController)
             }){
 
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
-                    Card(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 5.dp, horizontal = 10.dp)
-                        .clickable {
+            LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
+                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp, horizontal = 10.dp).clickable {
                             navController.navigate(Router.ADD_Notes.route)
                             MainActivity.GlobalVars.id = w.id
-                        }
-
-                    ){
+                        }){
                         Row{
                             var NoteDesc = remember{ mutableStateOf( false)}
                             var eliminarConfirmaciónrequerida by rememberSaveable { mutableStateOf(false) }
@@ -109,7 +112,22 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                 if(NoteDesc.value){
                                     Column {
                                         Text(text = stringResource(R.string.descripccion))
-                                        Text(text = "${w.NoteDescription}") } } }
+                                        Text(text = "${w.NoteDescription}")
+                                        Row{
+                                            Box(modifier = Modifier.fillMaxSize(0.3f)){
+                                                AsyncImage(
+                                                    model = w.NotePicture,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    contentDescription = "Selected image",
+                                                )
+                                            }
+                                            Box(modifier = Modifier.fillMaxSize(0.5f)){
+                                                VideoPlayer(videoUri = w.NoteVideo.toUri())
+                                            }
+                                        }
+
+                                    } } }
+
 
                             Column {
                                 IconButton(onClick = {
@@ -134,6 +152,7 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                 IconButton(onClick = {
                                     eliminarConfirmaciónrequerida = true
                                 }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") } }//EndColumn
+
                         }//EndRow
                     }//EndCard
                 }//EndItemsIndexed
@@ -157,11 +176,11 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                     TextField(value = name, onValueChange = {
                         name = it
                     }, modifier = Modifier.width(375.dp),
-                        placeholder = { Text(stringResource(R.string.buscar)) }) }//EndRow
+                        placeholder = { Text(stringResource(R.string.buscar)) }, maxLines = 1)
+                //listnote = db.daoNotes().coincidencia("'%$name%'").toMutableList()
+                }//EndRow
             }//EndColumn
-            Column(modifier = Modifier
-                .padding(65.dp)
-                .verticalScroll(rememberScrollState())) {
+            Column(modifier = Modifier.padding(65.dp).verticalScroll(rememberScrollState())) {
                 Row(verticalAlignment = Alignment.Top,horizontalArrangement = Arrangement.SpaceAround) {
                     Button(onClick = { /*TODO*/ }) {
                         Text(text = stringResource(R.string.todo))
@@ -175,9 +194,13 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
 
                 }//EndRow
             }//EndColumn
-
         }//Scaffold
-}else{
+}
+
+
+
+
+else{
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
@@ -217,8 +240,7 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                     Text(text = stringResource(R.string.descripccion))
                                     Text(text = "${w.NoteDescription}") } } }
 
-                        Column {
-                            IconButton(onClick = {
+                        Column { IconButton(onClick = {
                                 NoteDesc.value = !NoteDesc.value
                             }) {
                                 Icon(Icons.Filled.ArrowDropDown, contentDescription = stringResource(
@@ -226,17 +248,13 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                 ),Modifier.rotate(if(NoteDesc.value)180f else 360f)
                                 ) } }//EndColumn
 
-                        Column {
-
-                            if (eliminarConfirmaciónrequerida) {
+                        Column {if (eliminarConfirmaciónrequerida) {
                                 mostrarDialogoEliminacion(
                                     confirmarEliminacion = {
                                         db.daoNotes().deleteNote(w.id.toString())
                                         navController.navigate(Router.NOTES.route)
                                         eliminarConfirmaciónrequerida = false },
-
                                     cancelarEliminacion = { eliminarConfirmaciónrequerida = false })}
-
                             IconButton(onClick = {
                                 eliminarConfirmaciónrequerida = true
                             }) { Icon(Icons.Outlined.Delete, contentDescription = "Borrar") } }//EndColumn
@@ -253,31 +271,16 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                     )
                 }
             }
-            var name by remember {
-                mutableStateOf("")
-            }
-            Column(
-                modifier = Modifier
-                    .padding(5.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
+            var name by remember { mutableStateOf("") }
+
+            Column(modifier = Modifier.padding(5.dp).verticalScroll(rememberScrollState()),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
                 Row {
                     TextField(value = name, onValueChange = {
                         name = it
                     }, modifier = Modifier.width(835.dp),
-                        placeholder = { Text("Buscar") })
-
-                }
-            }
-
-                Row(modifier = Modifier
-                    .padding(65.dp)
-                    .fillMaxWidth(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
+                        placeholder = { Text(stringResource(R.string.buscar))}, maxLines = 1)}
+            }//EndColumn
+                Row(modifier = Modifier.padding(65.dp).fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceAround) {
                     Button(modifier = Modifier.fillMaxWidth(0.33f),onClick = { /*TODO*/ }) {
                         Text(text = stringResource(R.string.todo))
                     }
@@ -288,15 +291,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                         Text(text = stringResource(R.string.tareas))
                     }
                 }
-
-
         }//Scaffold
-
     }
-
-}//finfun
-
-
+}//Endfun
 @Composable
 private fun mostrarDialogoEliminacion(
     confirmarEliminacion: () -> Unit,
@@ -317,8 +314,6 @@ private fun mostrarDialogoEliminacion(
             }
         })
 }
-
-
 
 
 

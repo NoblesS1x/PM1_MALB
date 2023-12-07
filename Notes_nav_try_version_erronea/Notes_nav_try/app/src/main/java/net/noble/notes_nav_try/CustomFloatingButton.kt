@@ -1,20 +1,13 @@
 package com.jai.multifabbutton.compose
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.animation.core.*
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +19,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessAlarm
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddTask
+import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.rounded.AcUnit
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,30 +42,25 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-//import net.noble.notes_nav_try.ui.theme
-//import com.jai.multifabbutton.ui.theme.Gray80
-//import com.jai.multifabbutton.ui.theme.blue
+import androidx.navigation.NavController
+import net.noble.notes_nav_try.MainActivity
+import net.noble.notes_nav_try.Router
 
 
 //Declaracion y creacion del boton flotante
-/*
 @Composable
 @Preview
 fun FloatingButton(){
     FloatingActionButton(onClick = {},
         shape = CircleShape,
-        containerColor = blue,
+        containerColor = Color.Blue,
         elevation = FloatingActionButtonDefaults.elevation(
             defaultElevation = 8.dp
         )
     ) {
-        Icon(
-            painter = painterResource(id = com.jai.multifabbutton.R.drawable.ic_fab_add),
-            contentDescription = null,
-            tint = Color.White
-        )
+        Icon(imageVector = Icons.Filled.Add, contentDescription = "")
     }
 }
 
@@ -76,7 +68,7 @@ fun FloatingButton(){
 @Preview
 @Composable
 fun ViewMultiFloatingButton(){
-    MultiFloatingActionButton(fabIcon = painterResource(id =com.jai.multifabbutton.R.drawable.ic_fab_add), items = arrayListOf(FabItem(icon =  painterResource(id = com.jai.multifabbutton.R.drawable.ic_fab_add), label = "",{})))
+    //MultiFloatingActionButton(fabIcon = Icons.Rounded.Add, items = arrayListOf(FabItem(icon =  Icons.Rounded.AcUnit, label = "") {}))
 }
 
 
@@ -85,7 +77,7 @@ enum class MultiFabState {
     COLLAPSED, EXPANDED
 }
 class FabItem(
-    val icon: Painter,
+    val icon: ImageVector,
     val label: String,
     val onFabItemClicked: () -> Unit
 )
@@ -94,10 +86,11 @@ class FabItem(
 //Accion de boton y comportamiento 
 @Composable
 fun MultiFloatingActionButton(
-    fabIcon: Painter,
+    fabIcon: ImageVector,
     items: List<FabItem>,
     showLabels: Boolean = true,
-    onStateChanged: ((state: MultiFabState) -> Unit)? = null
+    onStateChanged: ((state: MultiFabState) -> Unit)? = null,
+    navController: NavController
 ) {
     var currentState by remember { mutableStateOf(MultiFabState.COLLAPSED) }
     val stateTransition: Transition<MultiFabState> =
@@ -150,7 +143,7 @@ fun MultiFloatingActionButton(
                     }) {
                     translate(150f, top = 300f) {
                         scale(5f) {}
-                        drawCircle(Gray80, radius = 200.dp.toPx())
+                        drawCircle(Color.Transparent, radius = 200.dp.toPx())
 
                     }
                 }
@@ -163,18 +156,19 @@ fun MultiFloatingActionButton(
                     SmallFloatingActionButtonRow(
                         item = item,
                         stateTransition = stateTransition,
-                        showLabel = showLabels
+                        showLabel = showLabels,
+                        navController = navController
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                 }
                 FloatingActionButton(
                     shape = CircleShape,
-                    containerColor = blue,
                     onClick = {
                         stateChange()
                     }) {
+                    /*Icon(imageVector = Icons.Filled.Add, contentDescription = "")*/
                     Icon(
-                        painter = fabIcon,
+                        imageVector = Icons.Filled.Add,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.rotate(rotation)
@@ -192,7 +186,8 @@ fun MultiFloatingActionButton(
 fun SmallFloatingActionButtonRow(
     item: FabItem,
     showLabel: Boolean,
-    stateTransition: Transition<MultiFabState>
+    stateTransition: Transition<MultiFabState>,
+    navController: NavController
 ) {
     val alpha: Float by stateTransition.animateFloat(
         transitionSpec = {
@@ -220,19 +215,31 @@ fun SmallFloatingActionButtonRow(
                     .clickable(onClick = { item.onFabItemClicked() })
             )
         }
-        SmallFloatingActionButton(
-            shape = CircleShape,
-            modifier = Modifier
-                .padding(4.dp),
-            onClick = { item.onFabItemClicked() },
-            containerColor = blue,
-            contentColor = Color.White
-        ) {
-            Icon(
-                painter = item.icon,
-                contentDescription = item.label
-            )
+        Column{
+            SmallFloatingActionButton(
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(4.dp),
+                onClick = {
+                    MainActivity.GlobalVars.id=-1
+                    navController.navigate(Router.ADD_Task.route) },
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.AddTask, contentDescription = "")
+            }
+            SmallFloatingActionButton(
+                shape = CircleShape,
+                modifier = Modifier
+                    .padding(4.dp),
+                onClick = {
+                    MainActivity.GlobalVars.id=-1
+                    navController.navigate(Router.ADD_Notes.route)
+                          },
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.Article, contentDescription = "")
+            }
         }
+
     }
 }
- */
