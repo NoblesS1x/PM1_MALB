@@ -28,6 +28,7 @@ import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Notes.Notes_ViewModel
 import net.noble.notes_nav_try.localdatabase.NotesData.Contract
 import net.noble.notes_nav_try.localdatabase.NotesData.NoteDB
 import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
+import net.noble.notes_nav_try.localdatabase.TaskData.TaskDB
 import java.io.File
 
 
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val db = Room.databaseBuilder(applicationContext, NoteDB::class.java, Contract.DB.NAME).allowMainThreadQueries().build()
+        val dbt = Room.databaseBuilder(applicationContext, TaskDB::class.java, Contract.DB.NAME).allowMainThreadQueries().build()
         val Notes_ViewModel by viewModels<Notes_ViewModel>()
         val Add_Notes_ViewModel by viewModels<Add_Notes_ViewModel>()
         val Add_Task_ViewModel by viewModels<Add_Task_ViewModel>()
@@ -70,7 +72,7 @@ class MainActivity : ComponentActivity() {
                         AddNotes(db,navController = navController,Add_Notes_ViewModel)
                     }
                     composable(Router.ADD_Task.route){
-                        AddTask(navController = navController,Add_Task_ViewModel)
+                        AddTask(dbt,navController = navController,Add_Task_ViewModel)
                     }
                 }
                 /*

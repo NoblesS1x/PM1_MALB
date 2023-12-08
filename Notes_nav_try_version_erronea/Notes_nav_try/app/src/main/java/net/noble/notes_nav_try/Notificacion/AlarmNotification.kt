@@ -21,7 +21,7 @@ class AlarmNotification(): BroadcastReceiver() {
         val desc = intent.getStringExtra("desc")
         val time = intent.getStringExtra("time")
 
-        val notificacion = NotificationCompat.Builder(context, "CanalTareas")
+        val notificacion = NotificationCompat.Builder(context, "Tareas")
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentText("La tarea $title caduca a las $time")
             .setStyle(

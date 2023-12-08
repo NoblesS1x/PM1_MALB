@@ -15,5 +15,7 @@ interface DaoTask {
     //ObtenerTodos
     @Query("SELECT * FROM ${net.noble.notes_nav_try.localdatabase.TaskData.Contract.TaskTbl.TABLE_NAME}")
     fun getListTask(): List<TaskData>
-    //ObtenerUno
+    //borrarUno
+    @Query("DELETE FROM ${net.noble.notes_nav_try.localdatabase.TaskData.Contract.TaskTbl.TABLE_NAME} WHERE id = :id")
+    fun deleteTask(id: String)
 }

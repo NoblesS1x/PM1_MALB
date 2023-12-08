@@ -64,6 +64,7 @@ import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Notes.Notes_ViewModel
 import net.noble.notes_nav_try.WindowInfo
 import net.noble.notes_nav_try.localdatabase.NotesData.NoteDB
 import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
+import net.noble.notes_nav_try.localdatabase.TaskData.TaskData
 import net.noble.notes_nav_try.rememberWindowInfo
 
 
@@ -74,7 +75,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
     val state = notesVievmodel.state
     var listnote = mutableListOf<NotesData>()
     listnote = db.daoNotes().getListNote().toMutableList()
+
     val windowInfo = rememberWindowInfo()
+    var isnote = true
 
     if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(
@@ -90,9 +93,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                     FabItem(icon =  Icons.Rounded.AcUnit, label = "") {}), navController = navController)
             }){
 
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
                     Card(modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 5.dp, horizontal = 10.dp)
@@ -120,23 +123,23 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                         Text(text = "${w.NoteDescription}")
 
                                         Row {
-                                                Box(modifier = Modifier.fillMaxSize(0.3f)){
-                                                    AsyncImage(
-                                                        model = w.NotePicture,
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        contentDescription = "Selected image",
-                                                    ) }
-                                                Box(modifier = Modifier.fillMaxSize(0.5f)){
-                                                    VideoPlayer(videoUri = w.NoteVideo.toUri())
-                                                }
-                                                Box{
+                                            Box(modifier = Modifier.fillMaxSize(0.3f)){
+                                                AsyncImage(
+                                                    model = w.NotePicture,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    contentDescription = "Selected image",
+                                                ) }
+                                            Box(modifier = Modifier.fillMaxSize(0.5f)){
+                                                VideoPlayer(videoUri = w.NoteVideo.toUri())
+                                            }
+                                            Box{
 
-                                                }
+                                            }
                                         }
 
                                     }//EndColumn
-                                    }//EndIf
-                                }
+                                }//EndIf
+                            }
 
 
                             Column {
@@ -166,7 +169,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                         }//EndRow
                     }//EndCard
                 }//EndItemsIndexed
-            }//EndLazyColumn
+                }//EndLazyColumn
+
+
 
             Canvas(modifier = Modifier.fillMaxSize()) {
                 translate(left = 0f, top = 0f) {
@@ -300,10 +305,10 @@ else{
                     Button(modifier = Modifier.fillMaxWidth(0.33f),onClick = { /*TODO*/ }) {
                         Text(text = stringResource(R.string.todo))
                     }
-                    Button(modifier = Modifier.fillMaxWidth(0.50f),onClick = { /*TODO*/ }) {
+                    Button(modifier = Modifier.fillMaxWidth(0.50f),onClick = { isnote=true}) {
                         Text(text = stringResource(R.string.notas))
                     }
-                    Button(modifier = Modifier.fillMaxWidth(),onClick = { /*TODO*/ }) {
+                    Button(modifier = Modifier.fillMaxWidth(),onClick = { isnote=false}) {
                         Text(text = stringResource(R.string.tareas))
                     }
                 }

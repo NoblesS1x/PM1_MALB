@@ -24,8 +24,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +48,7 @@ import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Task.Add_Task_ViewModel
 import net.noble.notes_nav_try.WindowInfo
 import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
+import net.noble.notes_nav_try.localdatabase.TaskData.TaskDB
 import net.noble.notes_nav_try.localdatabase.TaskData.TaskData
 import net.noble.notes_nav_try.rememberWindowInfo
 import java.time.LocalDateTime
@@ -53,17 +57,22 @@ import java.time.LocalTime
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
+fun AddTask(dbt: TaskDB, navController: NavController, addTaskViewmodel: Add_Task_ViewModel) {
+    val c = LocalContext.current
+    LaunchedEffect(Unit){
+        createChannelNotification("Tareas",c)
+    }
+    val state1 = rememberTimePickerState()
     val state = addTaskViewmodel.state
     val l = LocalContext.current
     val windowInfo = rememberWindowInfo()
     var name by remember { mutableStateOf("") }
     var date = LocalDateTime.now()
-    var ld = LocalTime.of(11, 12)
+    var ld = LocalTime.of(state1.hour, state1.minute)
     var time = LocalTime.now()
     var description by remember { mutableStateOf("") }
     var title = stringResource(R.string.nueva_tarea)
-    val c = LocalContext.current
+
     if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -100,8 +109,9 @@ fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
                             navController.popBackStack()
                         } else {
 
-                            val r = TaskData(0,"Hola",time.toString(),"Hola no se")
-                            TaskAlarm(context = l, expiration = ld,r)
+                            val r = TaskData(id = 0, TiteTask = name, DateTask = date.toString(), TaskDescription = description)
+                            TaskAlarm(context = c, expiration = ld,r)
+                            //dbt.daoTask().newTask(r)
                             Toast.makeText(c, "Tarea guardada", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
                         }
@@ -145,6 +155,16 @@ fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
                         modifier = Modifier.width(375.dp),
                         placeholder = { Text(stringResource(R.string.descripcion)) })
                 }
+                Row(modifier = Modifier.fillMaxSize()){
+
+                    Column{
+                        TimeInput(
+                            state = state1,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+
             }
         }
     } else {
@@ -200,3 +220,4 @@ fun AddTask(navController: NavController,addTaskViewmodel: Add_Task_ViewModel) {
         }
     }
 }
+
