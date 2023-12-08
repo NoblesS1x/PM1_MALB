@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="net.noble.notes_nav_try.Notificacion.notificacionProgramada"
+        <receiver android:name="net.noble.notes_nav_try.Notificacion.AlarmNotification"
             android:enabled="true"/>
         <provider
             android:name="net.noble.notes_nav_try.Multimedia.ComposeFileProvider"

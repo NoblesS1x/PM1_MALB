@@ -21,4 +21,6 @@
     <string name="todo">Todo</string>
     <string name="notas">Notas</string>
     <string name="tareas">Tareas</string>
+    <string name="nueva_tarea">Nueva Tarea</string>
+    <string name="titulo_de_tarea">Titulo de tarea</string>
 </resources>

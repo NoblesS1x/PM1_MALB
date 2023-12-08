@@ -21,9 +21,6 @@ import net.noble.notes_nav_try.rememberWindowInfo
 
 class Notes_ViewModel() : ViewModel() {
     var state by mutableStateOf(NoteState())
-
-
-
     //private set
     init {
 

@@ -66,6 +66,9 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.jai.multifabbutton.compose.FabItem
 import com.jai.multifabbutton.compose.MultiFloatingActionButton
 import net.noble.notes_nav_try.MainActivity
+import net.noble.notes_nav_try.Multimedia.AndroidAudioPlayer
+import net.noble.notes_nav_try.Multimedia.AndroidAudioRecorder
+import net.noble.notes_nav_try.Multimedia.GrabarAudioScreen
 import net.noble.notes_nav_try.R
 import net.noble.notes_nav_try.Router
 import net.noble.notes_nav_try.ViewModel.ViewModel_Screen_Add_Notes.Add_Notes_ViewModel
@@ -74,6 +77,7 @@ import net.noble.notes_nav_try.WindowInfo
 import net.noble.notes_nav_try.localdatabase.NotesData.NoteDB
 import net.noble.notes_nav_try.localdatabase.NotesData.NotesData
 import net.noble.notes_nav_try.rememberWindowInfo
+import java.io.File
 import java.time.LocalDateTime
 
 
@@ -83,6 +87,17 @@ import java.time.LocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_Notes_ViewModel) {
+    val c = LocalContext.current
+
+    val recorder by lazy {
+        AndroidAudioRecorder(c)
+    }
+
+    val player by lazy {
+        AndroidAudioPlayer(c)
+    }
+
+    var audioFile: File? = null
 
     var uri : Uri? = null
     // 1
@@ -109,7 +124,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
      description = NotesData.NoteDescription
         title = stringResource(R.string.editar_nota)
     }
-    val c = LocalContext.current
+
     val DaoN =db.daoNotes()
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -148,7 +163,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         Spacer(modifier = Modifier.size(22.dp))
                         Button(onClick = {
                             if(MainActivity.GlobalVars.id !=-1){
-                                DaoN.updateNote(MainActivity.GlobalVars.id.toString(),name,date.toString(),description,if(hasImage==true)imageUri.toString() else "vacio",if(hasVideo==true)imageUri.toString() else "vacio","vacio")
+                                DaoN.updateNote(MainActivity.GlobalVars.id.toString(),name,date.toString(),description,if(hasImage==true)imageUri.toString() else "vacio",if(hasVideo==true)imageUri.toString() else "vacio", Audio = "vacio")
                                 Toast.makeText( c,"Nota actualizada", Toast.LENGTH_SHORT).show()
                                 MainActivity.GlobalVars.id = -1
                                 //navController.navigate(Router.NOTES.route)
@@ -163,6 +178,20 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                             Icon(Icons.Default.Done , contentDescription = stringResource(R.string.guardar_nota))
                             Text(text = stringResource(R.string.guardar))
                         }
+                        /*
+                        GrabarAudioScreen(
+                            onClickStGra = {
+                                File(cacheDir, "audio.mp3").also {
+                                    recorder.start(it)
+                                    audioFile = it
+                                }
+
+                            },
+                            onClickSpGra = {recorder.stop()},
+                            onClickStRe = { audioFile?.let { player.start(it) } },
+                            onClickSpRe = {player.stop()}
+                        )
+                         */
                     }
 
                 }
@@ -310,9 +339,7 @@ fun AddNotes(db: NoteDB, navController: NavController, addNotesViewmodel: Add_No
                         modifier = Modifier.width(375.dp),
                         placeholder = { Text(stringResource(R.string.descripcion)) })
                 }
-
                 Box(modifier = Modifier.scale(0.8f)){
-                    val context = LocalContext.current
                     if ((hasImage or hasVideo) && imageUri != null) {
                         // 5
                         if(hasImage){

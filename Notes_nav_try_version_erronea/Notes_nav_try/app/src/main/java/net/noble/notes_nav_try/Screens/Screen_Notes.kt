@@ -90,8 +90,13 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                     FabItem(icon =  Icons.Rounded.AcUnit, label = "") {}), navController = navController)
             }){
 
-            LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
-                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp, horizontal = 10.dp).clickable {
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 120.dp)){ itemsIndexed(listnote){pos, w ->
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp, horizontal = 10.dp)
+                        .clickable {
                             navController.navigate(Router.ADD_Notes.route)
                             MainActivity.GlobalVars.id = w.id
                         }){
@@ -113,20 +118,25 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                                     Column {
                                         Text(text = stringResource(R.string.descripccion))
                                         Text(text = "${w.NoteDescription}")
-                                        Row{
-                                            Box(modifier = Modifier.fillMaxSize(0.3f)){
-                                                AsyncImage(
-                                                    model = w.NotePicture,
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    contentDescription = "Selected image",
-                                                )
-                                            }
-                                            Box(modifier = Modifier.fillMaxSize(0.5f)){
-                                                VideoPlayer(videoUri = w.NoteVideo.toUri())
-                                            }
+
+                                        Row {
+                                                Box(modifier = Modifier.fillMaxSize(0.3f)){
+                                                    AsyncImage(
+                                                        model = w.NotePicture,
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        contentDescription = "Selected image",
+                                                    ) }
+                                                Box(modifier = Modifier.fillMaxSize(0.5f)){
+                                                    VideoPlayer(videoUri = w.NoteVideo.toUri())
+                                                }
+                                                Box{
+
+                                                }
                                         }
 
-                                    } } }
+                                    }//EndColumn
+                                    }//EndIf
+                                }
 
 
                             Column {
@@ -180,7 +190,9 @@ fun Notes(db: NoteDB, navController: NavController, notesVievmodel: Notes_ViewMo
                 //listnote = db.daoNotes().coincidencia("'%$name%'").toMutableList()
                 }//EndRow
             }//EndColumn
-            Column(modifier = Modifier.padding(65.dp).verticalScroll(rememberScrollState())) {
+            Column(modifier = Modifier
+                .padding(65.dp)
+                .verticalScroll(rememberScrollState())) {
                 Row(verticalAlignment = Alignment.Top,horizontalArrangement = Arrangement.SpaceAround) {
                     Button(onClick = { /*TODO*/ }) {
                         Text(text = stringResource(R.string.todo))
@@ -273,14 +285,18 @@ else{
             }
             var name by remember { mutableStateOf("") }
 
-            Column(modifier = Modifier.padding(5.dp).verticalScroll(rememberScrollState()),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
+            Column(modifier = Modifier
+                .padding(5.dp)
+                .verticalScroll(rememberScrollState()),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Top) {
                 Row {
                     TextField(value = name, onValueChange = {
                         name = it
                     }, modifier = Modifier.width(835.dp),
                         placeholder = { Text(stringResource(R.string.buscar))}, maxLines = 1)}
             }//EndColumn
-                Row(modifier = Modifier.padding(65.dp).fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceAround) {
+                Row(modifier = Modifier
+                    .padding(65.dp)
+                    .fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceAround) {
                     Button(modifier = Modifier.fillMaxWidth(0.33f),onClick = { /*TODO*/ }) {
                         Text(text = stringResource(R.string.todo))
                     }
